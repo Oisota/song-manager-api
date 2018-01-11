@@ -1,0 +1,23 @@
+{
+  "name": "song-manager-api",
+  "version": "0.1.0",
+  "description": "API for song manager frontend",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "song",
+    "manager",
+    "music",
+    "set",
+    "list",
+    "band",
+    "musician"
+  ],
+  "author": "Derek Morey",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
