@@ -19,6 +19,7 @@
 	"author": "Derek Morey",
 	"license": "GPL-3.0",
 	"dependencies": {
+		"better-sqlite3": "^4.0.3",
 		"express": "^4.16.2"
 	}
 }
