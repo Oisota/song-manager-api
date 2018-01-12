@@ -11,15 +11,25 @@ router.route('/')
 })
 .post((req, res) => {
 	const song = req.body;
-	db.prepare('insert into song (name, artist, album, genre, minutes, seconds) values (:name, :artist, :album, :genre, :minutes, :seconds);')
+	db.prepare('INSERT INTO song (name, artist, album, genre, minutes, seconds) VALUES (:name, :artist, :album, :genre, :minutes, :seconds);')
 		.run(song);
 	res.status(201).end();
 });
 
 router.route('/:id')
+.put((req, res) => {
+	const song = Object.assign({id: req.params.id}, req.body);
+	const info = db.prepare('UPDATE song SET name = :name, artist = :artist, album = :album, genre = :genre, minutes = :minutes, seconds = :seconds WHERE id = :id;')
+		.run(song);
+	if (info.changes > 0) {
+		res.status(204).end();
+	} else {
+		res.status(404).end();
+	}
+})
 .delete((req, res) => {
 	const id = req.params.id;
-	const info = db.prepare('delete from song where id = ?;')
+	const info = db.prepare('DELETE FROM song WHERE id = ?;')
 		.run(id);
 	if (info.changes > 0) {
 		res.status(204).end()
