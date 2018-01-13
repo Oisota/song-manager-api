@@ -17,6 +17,16 @@ router.route('/')
 });
 
 router.route('/:id')
+.get((req, res) => {
+	const song = db.prepare('select * from song where id = ?')
+		.get(req.params.id);
+
+	if (song) {
+		res.json(song);
+	} else {
+		res.status(404).end();
+	}
+})
 .put((req, res) => {
 	const song = Object.assign({id: req.params.id}, req.body);
 	const info = db.prepare('UPDATE song SET name = :name, artist = :artist, album = :album, genre = :genre, minutes = :minutes, seconds = :seconds WHERE id = :id;')
