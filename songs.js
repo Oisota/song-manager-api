@@ -13,12 +13,18 @@ router.route('/')
 	const song = req.body;
 	db.prepare('INSERT INTO song (name, artist, album, genre, minutes, seconds) VALUES (:name, :artist, :album, :genre, :minutes, :seconds);')
 		.run(song);
-	res.status(201).end();
+
+	const newSong = db.prepare('SELECT * FROM song WHERE name = ?;')
+		.get(song.name);
+
+	res.status(201);
+	res.json(newSong);
+	res.end();
 });
 
 router.route('/:id')
 .get((req, res) => {
-	const song = db.prepare('select * from song where id = ?')
+	const song = db.prepare('SELECT * FROM song WHERE id = ?;')
 		.get(req.params.id);
 
 	if (song) {
