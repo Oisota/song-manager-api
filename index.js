@@ -31,6 +31,7 @@ router.get('/', (req, res) => {
 
 app.use('/api', router);
 app.use('/api/songs', api.songs);
+app.use('/api/setlists', api.setlists);
 
 app.listen(port);
 console.log('Listening on port: ' + port);
