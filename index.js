@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 
-const songs = require('./songs');
+const api = require('./api');
 
 const app = express();
 
@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
 });
 
 app.use('/api', router);
-app.use('/api/songs', songs);
+app.use('/api/songs', api.songs);
 
 app.listen(port);
 console.log('Listening on port: ' + port);
