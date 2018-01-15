@@ -69,6 +69,7 @@ router.route('/:id')
 		WHERE id = ?;`;
 	const info = db.prepare(q)
 		.run(id);
+
 	if (info.changes > 0) {
 		res.status(204).end()
 	} else {
@@ -101,11 +102,26 @@ router.route('/:setlist_id/songs/:song_id')
 		VALUES (:setlist_id, :song_id);`;
 	const info = db.prepare(q)
 		.run(req.params);
+
 	if (info.changes > 0) {
 		res.status(204).end()
 	} else {
 		res.status(404).end()
 	}
 })
+.delete((req, res) => {
+	const q = `
+		DELETE FROM song_setlist
+		WHERE song_id = :song_id
+		AND setlist_id = :setlist_id;`;
+	const info = db.prepare(q)
+		.run(req.params);
+
+	if (info.changes > 0) {
+		res.status(204).end()
+	} else {
+		res.status(404).end()
+	}
+});
 
 module.exports = router;
