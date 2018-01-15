@@ -6,15 +6,25 @@ const db = database.getDB();
 
 router.route('/')
 .get((req, res) => {
-	const songs = db.prepare('SELECT * FROM song;').all();
+	const q = `
+		SELECT *
+		FROM song;`;
+	const songs = db.prepare(q).all();
 	res.json({songs});
 })
 .post((req, res) => {
 	const song = req.body;
-	db.prepare('INSERT INTO song (name, artist, album, genre, minutes, seconds) VALUES (:name, :artist, :album, :genre, :minutes, :seconds);')
+	let q = `
+		INSERT INTO song (name, artist, album, genre, minutes, seconds)
+		VALUES (:name, :artist, :album, :genre, :minutes, :seconds);`;
+	db.prepare(q)
 		.run(song);
 
-	const newSong = db.prepare('SELECT * FROM song WHERE name = ?;')
+	q = `
+		SELECT *
+		FROM song
+		WHERE name = ?;`;
+	const newSong = db.prepare(q)
 		.get(song.name);
 
 	res.status(201);
@@ -24,7 +34,11 @@ router.route('/')
 
 router.route('/:id')
 .get((req, res) => {
-	const song = db.prepare('SELECT * FROM song WHERE id = ?;')
+	const q = `
+		SELECT *
+		FROM song
+		WHERE id = ?;`;
+	const song = db.prepare(q)
 		.get(req.params.id);
 
 	if (song) {
@@ -35,7 +49,11 @@ router.route('/:id')
 })
 .put((req, res) => {
 	const song = Object.assign({id: req.params.id}, req.body);
-	const info = db.prepare('UPDATE song SET name = :name, artist = :artist, album = :album, genre = :genre, minutes = :minutes, seconds = :seconds WHERE id = :id;')
+	const q = `
+		UPDATE song
+		SET name = :name, artist = :artist, album = :album, genre = :genre, minutes = :minutes, seconds = :seconds
+		WHERE id = :id;`;
+	const info = db.prepare(q)
 		.run(song);
 	if (info.changes > 0) {
 		res.status(204).end();
@@ -45,7 +63,10 @@ router.route('/:id')
 })
 .delete((req, res) => {
 	const id = req.params.id;
-	const info = db.prepare('DELETE FROM song WHERE id = ?;')
+	const q = `
+		DELETE FROM song
+		WHERE id = ?;`;
+	const info = db.prepare(q)
 		.run(id);
 	if (info.changes > 0) {
 		res.status(204).end()

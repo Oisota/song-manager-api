@@ -6,16 +6,26 @@ const db = database.getDB();
 
 router.route('/')
 .get((req, res) => {
-	const setlists = db.prepare('SELECT * FROM setlist;')
+	const q = `
+		SELECT *
+		FROM setlist;`;
+	const setlists = db.prepare(q)
 		.all()
 	res.json({setlists})
 })
 .post((req, res) => {
 	const setlist = req.body;
-	db.prepare('INSERT INTO setlist (name) VALUES (:name);')
+	let q = `
+		INSERT INTO setlist (name)
+		VALUES (:name);`;
+	db.prepare(q)
 		.run(setlist);
 
-	const newSetList = db.prepare('SELECT * FROM setlist WHERE name = ?;')
+	q = `
+		SELECT *
+		FROM setlist
+		WHERE name = ?;`;
+	const newSetList = db.prepare(q)
 		.get(setlist.name);
 
 	res.status(201);
@@ -25,7 +35,11 @@ router.route('/')
 
 router.route('/:id')
 .get((req, res) => {
-	const setlist = db.prepare('SELECT * FROM setlist WHERE id = ?;')
+	const q = `
+		SELECT *
+		FROM setlist
+		WHERE id = ?;`;
+	const setlist = db.prepare(q)
 		.get(req.params.id);
 
 	if (setlist) {
@@ -36,7 +50,11 @@ router.route('/:id')
 })
 .put((req, res) => {
 	const setlist = Object.assign({id: req.params.id}, req.body);
-	const info = db.prepare('UPDATE setlist SET name = :name WHERE id = :id;')
+	const q = `
+		UPDATE setlist
+		SET name = :name
+		WHERE id = :id;`;
+	const info = db.prepare(q)
 		.run(setlist);
 	if (info.changes > 0) {
 		res.status(204).end();
@@ -46,7 +64,10 @@ router.route('/:id')
 })
 .delete((req, res) => {
 	const id = req.params.id;
-	const info = db.prepare('DELETE FROM setlist WHERE id = ?;')
+	const q = `
+		DELETE FROM setlist
+		WHERE id = ?;`;
+	const info = db.prepare(q)
 		.run(id);
 	if (info.changes > 0) {
 		res.status(204).end()
@@ -58,10 +79,10 @@ router.route('/:id')
 router.route('/:id/songs')
 .get((req, res) => {
 	const q = `
-		SELECT * 
-		FROM song 
-		INNER JOIN song_setlist 
-		ON song.id = song_setlist.song_id 
+		SELECT *
+		FROM song
+		INNER JOIN song_setlist
+		ON song.id = song_setlist.song_id
 		WHERE song_setlist.setlist_id = ?;`
 	const songs = db.prepare(q)
 		.all(req.params.id);
@@ -76,7 +97,7 @@ router.route('/:id/songs')
 router.route('/:setlist_id/songs/:song_id')
 .put((req, res) => {
 	const q = `
-		INSERT INTO song_setlist (setlist_id, song_id) 
+		INSERT INTO song_setlist (setlist_id, song_id)
 		VALUES (:setlist_id, :song_id);`;
 	const info = db.prepare(q)
 		.run(req.params);
