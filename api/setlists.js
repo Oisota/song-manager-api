@@ -55,4 +55,36 @@ router.route('/:id')
 	}
 });
 
+router.route('/:id/songs')
+.get((req, res) => {
+	const q = `
+		SELECT * 
+		FROM song 
+		INNER JOIN song_setlist 
+		ON song.id = song_setlist.song_id 
+		WHERE song_setlist.setlist_id = ?;`
+	const songs = db.prepare(q)
+		.all(req.params.id);
+
+	if (songs) {
+		res.json({songs});
+	} else {
+		res.status(404).end();
+	}
+})
+
+router.route('/:setlist_id/songs/:song_id')
+.put((req, res) => {
+	const q = `
+		INSERT INTO song_setlist (setlist_id, song_id) 
+		VALUES (:setlist_id, :song_id);`;
+	const info = db.prepare(q)
+		.run(req.params);
+	if (info.changes > 0) {
+		res.status(204).end()
+	} else {
+		res.status(404).end()
+	}
+})
+
 module.exports = router;
