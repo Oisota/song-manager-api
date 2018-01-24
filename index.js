@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const bearerToken = require('express-bearer-token');
 
 const api = require('./api');
 
@@ -8,6 +9,7 @@ const app = express();
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(bearerToken());
 app.use(morgan('dev'));
 app.use((req, res, next) => {
 	res.header('Access-Control-Allow-Origin', '*');
