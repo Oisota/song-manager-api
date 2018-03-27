@@ -1,0 +1,52 @@
+const crypto = require('crypto');
+
+const database = require('./database');
+
+const config = require('../config');
+
+const maxTokenAge = 86400 * 2; // 2 days
+const HMAC_ALGO = 'sha256';
+
+function verify(key, token) {
+	const hmac = crypto.createHmac(HMAC_ALGO, key);
+	const [data, sig] = token.split(':');
+	const dataBuffer = Buffer.from(data, 'base64');
+	hmac.update(dataBuffer);
+	hash = hmac.digest('base64');
+	return sig === hash
+		? JSON.parse(dataBuffer.toString('utf-8'))
+		: null; 
+}
+
+exports.sign = (key, data) => {
+	const hmac = crypto.createHmac(HMAC_ALGO, key);
+	const json = JSON.stringify(data);
+	const dataBuffer = Buffer.from(json);
+	hmac.update(dataBuffer);
+	return dataBuffer.toString('base64') + ':' + hmac.digest('base64');
+}
+
+/*
+ * Require that a user be authenticated
+ */
+exports.requireAuth = (req, res, next) => {
+	data = verify(req.token);
+	if (!data) {
+		res.status(400).end();
+	} else if (data.id !== req.params.userID) {
+		res.status(403).end();
+	} else {
+		next();
+	}
+};
+
+/*
+ * Require that a user has a certain role
+ */
+exports.role = (role) => (req, res, next) => {
+	if (req.user.role === role) {
+		next();
+	} else {
+		res.status(403).end();
+	}
+};

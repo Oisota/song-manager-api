@@ -24,6 +24,7 @@ app.use((req, res, next) => {
 });
 app.use('/api/songs', api.songs);
 app.use('/api/setlists', api.setlists);
+app.use('/api/auth', api.auth);
 
 const port = process.env.PORT || 6505;
 

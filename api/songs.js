@@ -1,8 +1,12 @@
 const express = require('express');
+
 const database = require('./database');
+const util = require('./util');
 
 const router = express.Router();
 const db = database.getDB();
+
+router.use(util.requireAuth);
 
 router.route('/')
 .get((req, res) => {
