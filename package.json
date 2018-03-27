@@ -21,6 +21,7 @@
 		"serve_docs": "http-server out"
 	},
 	"dependencies": {
+		"bcrypt": "^1.0.3",
 		"better-sqlite3": "^4.0.3",
 		"express": "^4.16.2",
 		"express-bearer-token": "^2.1.1",
