@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bearerToken());
 app.use(morgan('dev'));
-app.use((req, res, next) => {
+app.use((req, res, next) => { // allow cors
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
@@ -22,9 +22,9 @@ app.use((req, res, next) => {
 		next();
 	}
 });
-app.use('/api/songs', api.songs);
-app.use('/api/setlists', api.setlists);
-app.use('/api/auth', api.auth);
+app.use('/api', api.songs);
+app.use('/api', api.setlists);
+app.use('/api', api.auth);
 
 const port = process.env.PORT || 6505;
 

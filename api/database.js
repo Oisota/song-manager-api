@@ -8,4 +8,4 @@ exports.getDB = () => {
 		conn = new Database(config.dbFile);
 	}
 	return conn;
-}
+};

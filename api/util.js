@@ -1,10 +1,7 @@
 const crypto = require('crypto');
 
-const database = require('./database');
-
 const config = require('../config');
 
-const maxTokenAge = 86400 * 2; // 2 days
 const HMAC_ALGO = 'sha256';
 
 function verify(key, token) {
@@ -12,7 +9,7 @@ function verify(key, token) {
 	const [data, sig] = token.split(':');
 	const dataBuffer = Buffer.from(data, 'base64');
 	hmac.update(dataBuffer);
-	hash = hmac.digest('base64');
+	const hash = hmac.digest('base64');
 	return sig === hash
 		? JSON.parse(dataBuffer.toString('utf-8'))
 		: null; 
@@ -24,16 +21,16 @@ exports.sign = (key, data) => {
 	const dataBuffer = Buffer.from(json);
 	hmac.update(dataBuffer);
 	return dataBuffer.toString('base64') + ':' + hmac.digest('base64');
-}
+};
 
 /*
  * Require that a user be authenticated
  */
 exports.requireAuth = (req, res, next) => {
-	data = verify(req.token);
+	const data = verify(config.SECRET_KEY, req.token);
 	if (!data) {
 		res.status(400).end();
-	} else if (data.id !== req.params.userID) {
+	} else if (data.id !== Number(req.params.userID)) {
 		res.status(403).end();
 	} else {
 		next();

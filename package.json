@@ -17,8 +17,7 @@
 	"scripts": {
 		"start": "node index.js",
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"doc": "jsdoc -r *.js api",
-		"serve_docs": "http-server out"
+		"lint": "eslint '*.js' 'api/**/*.js'"
 	},
 	"dependencies": {
 		"bcrypt": "^1.0.3",
@@ -27,5 +26,7 @@
 		"express-bearer-token": "^2.1.1",
 		"morgan": "^1.9.0"
 	},
-	"devDependencies": {}
+	"devDependencies": {
+		"eslint": "^4.19.1"
+	}
 }
