@@ -59,12 +59,24 @@ router.route('/account-requests')
 	.all(requireAuth)
 	.all(role('admin'))
 	.get((req, res) => {
+		const q = `
+			SELECT id, email
+			FROM user
+			WHERE NOT verified;`
+		const users = db.prepare(q).all();
+		res.json(users);
 	});
 
 router.route('/verify/:id')
 	.all(requireAuth)
 	.all(role('admin'))
 	.post((req, res) => {
+		q = `
+			update user
+			set verified = 1
+			where id = ?;`;
+		db.prepare(q).run(req.params.id);
+		res.status(204).end();
 	});
 
 module.exports = router;

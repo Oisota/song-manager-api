@@ -37,6 +37,7 @@ create table if not exists user (
 	id integer primary key autoincrement,
 	email text not null,
 	hash text not null,
+	verified integer not null default 0,
 	role_id integer not null,
 	foreign key (role_id) references role(id)
 );

@@ -1,8 +1,10 @@
 const crypto = require('crypto');
 
+const database = require('./database');
 const config = require('../config');
 
 const HMAC_ALGO = 'sha256';
+const db = database.getDB();
 
 function verify(key, token) {
 	const hmac = crypto.createHmac(HMAC_ALGO, key);
@@ -25,14 +27,19 @@ exports.sign = (key, data) => {
 
 /*
  * Require that a user be authenticated
+ * If so, load user
  */
 exports.requireAuth = (req, res, next) => {
 	const data = verify(config.SECRET_KEY, req.token);
 	if (!data) {
 		res.status(400).end();
-	} else if (data.id !== Number(req.params.userID)) {
-		res.status(403).end();
 	} else {
+		q = `
+			SELECT user.id, user.email, role.name as 'role'
+			FROM user
+			INNER JOIN ROLE ON user.role_id = role.id
+			WHERE user.id = ?`;
+		req.user = db.prepare(q).get(data.id);
 		next();
 	}
 };
