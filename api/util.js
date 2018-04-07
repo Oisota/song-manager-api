@@ -34,7 +34,7 @@ exports.requireAuth = (req, res, next) => {
 	if (!data) {
 		res.status(400).end();
 	} else {
-		q = `
+		const q = `
 			SELECT user.id, user.email, role.name as 'role'
 			FROM user
 			INNER JOIN ROLE ON user.role_id = role.id

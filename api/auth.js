@@ -62,7 +62,7 @@ router.route('/account-requests')
 		const q = `
 			SELECT id, email
 			FROM user
-			WHERE NOT verified;`
+			WHERE NOT verified;`;
 		const users = db.prepare(q).all();
 		res.json(users);
 	});
@@ -71,7 +71,7 @@ router.route('/verify/:id')
 	.all(requireAuth)
 	.all(role('admin'))
 	.post((req, res) => {
-		q = `
+		const q = `
 			update user
 			set verified = 1
 			where id = ?;`;
