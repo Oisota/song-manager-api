@@ -14,7 +14,7 @@ app.use(bearerToken());
 app.use(morgan('dev'));
 app.use((req, res, next) => { // allow cors
 	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
 	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
 	if (req.method === 'options') {
 		res.status(200).end();
