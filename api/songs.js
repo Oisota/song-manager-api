@@ -17,8 +17,7 @@ router.route('/users/:userID/songs')
 		res.json({songs});
 	})
 	.post((req, res) => {
-		const song = req.body;
-		song.userID = req.params.userID;
+		const song = Object.assign(req.params, req.body); //merge params and body
 		let q = `
 			INSERT INTO song (name, artist, album, genre, minutes, seconds, user_id)
 			VALUES (:name, :artist, :album, :genre, :minutes, :seconds, :userID);`;
@@ -33,9 +32,7 @@ router.route('/users/:userID/songs')
 				user_id = :userID;`;
 		const newSong = db.prepare(q).get(song);
 
-		res.status(201);
-		res.json(newSong);
-		res.end();
+		res.status(201).json(newSong);
 	});
 
 router.route('/users/:userID/songs/:songID')
@@ -44,9 +41,11 @@ router.route('/users/:userID/songs/:songID')
 		const q = `
 			SELECT *
 			FROM song
-			WHERE id = ?;`;
+			WHERE
+				id = :songID AND
+				user_id = :userID;`;
 		const song = db.prepare(q)
-			.get(req.params.id);
+			.get(req.params);
 
 		if (song) {
 			res.json(song);
@@ -55,31 +54,35 @@ router.route('/users/:userID/songs/:songID')
 		}
 	})
 	.put((req, res) => {
-		const song = Object.assign({id: req.params.id}, req.body);
+		const song = Object.assign(req.params, req.body); //merge params and body
 		const q = `
 			UPDATE song
 			SET name = :name, artist = :artist, album = :album, genre = :genre, minutes = :minutes, seconds = :seconds
-			WHERE id = :id;`;
+			WHERE
+				id = :songID AND
+				user_id = :userID;`;
 		const info = db.prepare(q)
 			.run(song);
-		if (info.changes > 0) {
-			res.status(204).end();
-		} else {
+
+		if (info.changes < 1) {
 			res.status(404).end();
+		} else {
+			res.status(204).end();
 		}
 	})
 	.delete((req, res) => {
 		const q = `
 			DELETE FROM song
 			WHERE
-				id = :id,
+				id = :songID,
 				user_id = :userID;`;
 		const info = db.prepare(q)
 			.run(req.params);
-		if (info.changes > 0) {
-			res.status(204).end();
-		} else {
+
+		if (info.changes < 1) {
 			res.status(404).end();
+		} else {
+			res.status(204).end();
 		}
 	});
 
