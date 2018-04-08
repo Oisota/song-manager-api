@@ -15,16 +15,20 @@ router.route('/login')
 		const email = req.body.email;
 		const password = req.body.password;
 		const q = `
-			SELECT id, hash
+			SELECT user.id, user.hash, role.name as 'role'
 			FROM user
+			INNER JOIN role ON role.id = user.role_id
 			WHERE email = ?;`;
 		const user = db.prepare(q).get(email);
 		const validPassword = await bcrypt.compare(password, user.hash);
 		if (validPassword) {
 			const token = util.sign(config.SECRET_KEY, {id: user.id});
 			res.status(200);
-			res.json({token});
-			res.end();
+			res.json({
+				token: token,
+				role: user.role,
+				id: user.id,
+			});
 		} else {
 			res.status(401).end();
 		}
@@ -46,13 +50,17 @@ router.route('/register')
 		q = `
 			INSERT INTO user (email, hash, role_id)
 			VALUES (:email, :hash, :roleID);`;
-		db.prepare(q).run({
+		const info = db.prepare(q).run({
 			email,
 			hash,
 			roleID
 		});
 
-		res.status(201).end();
+		if (info.changes < 1) {
+			res.status(500).end();
+		} else {
+			res.status(201).end();
+		}
 	});
 
 router.route('/account-requests')
@@ -72,11 +80,15 @@ router.route('/verify/:id')
 	.all(role('admin'))
 	.post((req, res) => {
 		const q = `
-			update user
-			set verified = 1
-			where id = ?;`;
-		db.prepare(q).run(req.params.id);
-		res.status(204).end();
+			UPDATE user
+			SET verified = 1
+			WHERE id = ?;`;
+		const info = db.prepare(q).run(req.params.id);
+		if (info.changes < 1) {
+			res.status(500).end();
+		} else {
+			res.status(204).end();
+		}
 	});
 
 module.exports = router;
