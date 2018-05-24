@@ -5,8 +5,7 @@ create table if not exists song (
 	artist text,
 	album text,
 	genre text,
-	minutes integer,
-	seconds integer,
+	length_ integer,
 	user_id integer not null,
 	constraint uc_song unique (name)
 	foreign key (user_id) references user(id)

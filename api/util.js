@@ -38,7 +38,7 @@ exports.requireAuth = (req, res, next) => {
 			SELECT user.id, user.email, role.name as 'role'
 			FROM user
 			INNER JOIN ROLE ON user.role_id = role.id
-			WHERE user.id = ?`;
+			WHERE user.id = ?;`;
 		req.user = db.prepare(q).get(data.id);
 		next();
 	}

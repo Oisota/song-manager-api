@@ -14,13 +14,13 @@ router.route('/users/:userID/songs')
 			FROM song
 			WHERE user_id = ?;`;
 		const songs = db.prepare(q).all(req.params.userID);
-		res.json({songs});
+		res.json(songs);
 	})
 	.post((req, res) => {
 		const song = Object.assign(req.params, req.body); //merge params and body
 		let q = `
-			INSERT INTO song (name, artist, album, genre, minutes, seconds, user_id)
-			VALUES (:name, :artist, :album, :genre, :minutes, :seconds, :userID);`;
+			INSERT INTO song (name, artist, album, genre, length_, user_id)
+			VALUES (:name, :artist, :album, :genre, :length, :userID);`;
 		db.prepare(q)
 			.run(song);
 
@@ -57,7 +57,7 @@ router.route('/users/:userID/songs/:songID')
 		const song = Object.assign(req.params, req.body); //merge params and body
 		const q = `
 			UPDATE song
-			SET name = :name, artist = :artist, album = :album, genre = :genre, minutes = :minutes, seconds = :seconds
+			SET name = :name, artist = :artist, album = :album, genre = :genre, length_ = :length
 			WHERE
 				id = :songID AND
 				user_id = :userID;`;
@@ -74,7 +74,7 @@ router.route('/users/:userID/songs/:songID')
 		const q = `
 			DELETE FROM song
 			WHERE
-				id = :songID,
+				id = :songID AND
 				user_id = :userID;`;
 		const info = db.prepare(q)
 			.run(req.params);
