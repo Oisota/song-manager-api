@@ -10,7 +10,14 @@ router.route('/users/:userID/songs')
 	.all(util.requireAuth)
 	.get((req, res) => {
 		const q = `
-			SELECT *
+			SELECT
+				id,
+				user_id,
+				name,
+				artist,
+				album,
+				genre,
+				length_ as 'length'
 			FROM song
 			WHERE user_id = ?;`;
 		const songs = db.prepare(q).all(req.params.userID);
@@ -39,7 +46,14 @@ router.route('/users/:userID/songs/:songID')
 	.all(util.requireAuth)
 	.get((req, res) => {
 		const q = `
-			SELECT *
+			SELECT
+				id,
+				user_id,
+				name,
+				artist,
+				album,
+				genre,
+				length_ as 'length'
 			FROM song
 			WHERE
 				id = :songID AND
