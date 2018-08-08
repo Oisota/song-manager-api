@@ -2,12 +2,14 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const bearerToken = require('express-bearer-token');
+const helmet = require('helmet');
 
 const api = require('./api');
 
 const app = express();
-app.disable('x-powered-by');
 
+app.disable('x-powered-by');
+app.use(helmet());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bearerToken());
