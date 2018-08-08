@@ -5,7 +5,7 @@ const config = require('../config');
 const database = require('./database');
 const util = require('./util');
 
-const role = util.role;
+const requiredRole = util.role;
 const requireAuth = util.requireAuth;
 const router = express.Router();
 const db = database.getDB();
@@ -65,7 +65,7 @@ router.route('/register')
 
 router.route('/account-requests')
 	.all(requireAuth)
-	.all(role('admin'))
+	.all(requiredRole('admin'))
 	.get((req, res) => {
 		const q = `
 			SELECT id, email
@@ -77,7 +77,7 @@ router.route('/account-requests')
 
 router.route('/verify/:id')
 	.all(requireAuth)
-	.all(role('admin'))
+	.all(requiredRole('admin'))
 	.post((req, res) => {
 		const q = `
 			UPDATE user
