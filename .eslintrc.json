@@ -25,6 +25,20 @@
 			"error",
 			"always"
 		],
-		"no-console": "off"
+		"no-console": "off",
+		"no-new": "error",
+		"no-param-reassign": "error",
+		"array-callback-return": "error",
+		"no-shadow": "error",
+		"no-use-before-define": "error",
+		"global-require": "error",
+		"no-process-env": "error",
+		"no-lonely-if": "error",
+		"max-params": ["error", 4],
+		"max-len": [
+			"error",
+			{"code": 120, "tabWidth": 2}
+		],
+		"no-plusplus": "error"
 	}
 }
