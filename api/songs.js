@@ -1,13 +1,13 @@
 const express = require('express');
+const passport = require('passport');
 
 const database = require('./database');
-const util = require('./util');
 
 const router = express.Router();
 const db = database.getDB();
 
 router.route('/users/:userID/songs')
-	.all(util.requireAuth)
+	.all(passport.authenticate('jwt'))
 	.get((req, res) => {
 		const q = `
 			SELECT
@@ -43,7 +43,7 @@ router.route('/users/:userID/songs')
 	});
 
 router.route('/users/:userID/songs/:songID')
-	.all(util.requireAuth)
+	.all(passport.authenticate('jwt'))
 	.get((req, res) => {
 		const q = `
 			SELECT

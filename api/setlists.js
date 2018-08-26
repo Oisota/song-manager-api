@@ -1,7 +1,7 @@
 const express = require('express');
+const passport = require('passport');
 
 const database = require('./database');
-const util = require('./util');
 
 const router = express.Router();
 const db = database.getDB();
@@ -11,7 +11,7 @@ const db = database.getDB();
  * POST create new set list
  */
 router.route('/users/:userID/setlists')
-	.all(util.requireAuth)
+	.all(passport.authenticate('jwt'))
 	.get((req, res) => {
 		const q = `
 			SELECT *
@@ -44,7 +44,7 @@ router.route('/users/:userID/setlists')
  * Update individual setlists
  */
 router.route('users/:userID/setlists/:id')
-	.all(util.requireAuth)
+	.all(passport.authenticate('jwt'))
 	.get((req, res) => {
 		const q = `
 			SELECT *
@@ -92,7 +92,7 @@ router.route('users/:userID/setlists/:id')
  * GET all songs in a setlist
  */
 router.route('users/:userID/setlists/:id/songs')
-	.all(util.requireAuth)
+	.all(passport.authenticate('jwt'))
 	.get((req, res) => {
 		const q = `
 			SELECT *
@@ -114,7 +114,7 @@ router.route('users/:userID/setlists/:id/songs')
  * Add song to individual setlist
  */
 router.route('/users/:userID/:setlist_id/songs/:song_id')
-	.all(util.requireAuth)
+	.all(passport.authenticate('jwt'))
 	.put((req, res) => {
 		const q = `
 			INSERT INTO song_setlist (setlist_id, song_id)
