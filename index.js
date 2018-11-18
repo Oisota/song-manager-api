@@ -51,7 +51,6 @@ app.use((req, res, next) => { // allow cors
 	}
 });
 app.use('/api', api.songs);
-app.use('/api', api.setlists);
 app.use('/api/auth', api.auth);
 
 const port = config.PORT;
