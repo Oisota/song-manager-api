@@ -11,26 +11,6 @@ create table if not exists song (
 	foreign key (user_id) references user(id)
 );
 
-drop table if exists setlist;
-create table if not exists setlist (
-	id integer primary key autoincrement,
-	name text not null,
-	user_id integer not null,
-	constraint uc_song unique (name)
-	foreign key (user_id) references user(id)
-);
-
-drop table if exists song_setlist;
-create table if not exists song_setlist (
-	setlist_id integer not null,
-	song_id integer not null,
-	user_id integer not null,
-	primary key (setlist_id, song_id),
-	foreign key (setlist_id) references setlist(id),
-	foreign key (song_id) references song(id)
-	foreign key (user_id) references user(id)
-);
-
 drop table if exists user;
 create table if not exists user (
 	id integer primary key autoincrement,
