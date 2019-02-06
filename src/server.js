@@ -3,42 +3,32 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const bearerToken = require('express-bearer-token');
 const helmet = require('helmet');
-const passport = require('passport');
-const passportJwt = require('passport-jwt');
+const jwt = require('express-jwt');
+const jwks = require('jwks-rsa');
 
 const config = require('./config');
-const database = require('./api/database');
 const api = require('./api');
 
 const app = express();
-const db = database.getDB();
 
-passport.use(new passportJwt.Strategy({
-	jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
-	secretOrKey: config.SECRET_KEY,
-}, (payload, done) => {
-	const q = `
-		SELECT
-			user.id AS 'id',
-			user.email AS 'email',
-			role.name AS 'role'
-		FROM user
-		INNER JOIN ROLE ON user.role_id = role.id
-		WHERE user.id = ?;`;
-	const user = db.prepare(q).get(payload.sub);
-	if (user) {
-		return done(null, user);
-	} else {
-		return done(null, false);
-	}
-}));
+const jwtCheck = jwt({
+	secret: jwks.expressJwtSecret({
+		cache: true,
+		rateLimit: true,
+		jwksRequestsPerMinute: 10,
+		jwksUri: 'https://song-manager.auth0.com/.well-known/jwks.json',
+	}),
+	audience: 'http://localhost:6505/api/v1',
+	issuer: 'https://song-manager.auth0.com/',
+	algorithms: ['RS256'],
+});
 
 app.disable('x-powered-by');
 app.use(helmet());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bearerToken());
-app.use(passport.initialize());
+app.use(jwtCheck);
 app.use(morgan('dev'));
 app.use((req, res, next) => { // allow cors
 	res.header('Access-Control-Allow-Origin', '*');
@@ -51,7 +41,7 @@ app.use((req, res, next) => { // allow cors
 	}
 });
 app.use('/api', api.songs);
-app.use('/api/auth', api.auth);
+app.use('/api', api.user);
 
 const port = config.PORT;
 
