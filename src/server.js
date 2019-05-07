@@ -40,8 +40,8 @@ app.use((req, res, next) => { // allow cors
 		next();
 	}
 });
-app.use('/api', api.songs);
-app.use('/api', api.user);
+app.use(`/api/${config.apiVersion}`, api.songs);
+app.use(`/api/${config.apiVersion}`, api.user);
 
 const port = config.PORT;
 
