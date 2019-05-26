@@ -11,7 +11,13 @@ const api = require('./api');
 
 const app = express();
 
-const jwtCheck = jwt({
+app.use(morgan('dev'));
+app.disable('x-powered-by');
+app.use(helmet());
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bearerToken());
+app.use(jwt({
 	secret: jwks.expressJwtSecret({
 		cache: true,
 		rateLimit: true,
@@ -21,15 +27,7 @@ const jwtCheck = jwt({
 	audience: 'http://localhost:6505/api/v1',
 	issuer: 'https://song-manager.auth0.com/',
 	algorithms: ['RS256'],
-});
-
-app.disable('x-powered-by');
-app.use(helmet());
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
-app.use(bearerToken());
-app.use(jwtCheck);
-app.use(morgan('dev'));
+}));
 app.use((req, res, next) => { // allow cors
 	res.header('Access-Control-Allow-Origin', '*');
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
@@ -40,10 +38,16 @@ app.use((req, res, next) => { // allow cors
 		next();
 	}
 });
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+	if (err.name === 'UnauthorizedError') {
+		res.status(401).json({
+			message: 'Unauthorized'
+		});
+	}
+});
 app.use(`/api/${config.apiVersion}`, api.songs);
 app.use(`/api/${config.apiVersion}`, api.user);
 
-const port = config.PORT;
-
-app.listen(port);
-console.log('Listening on port: ' + port);
+app.listen(config.PORT, () => {
+	console.log(`Listening on port: ${config.PORT}`);
+});
