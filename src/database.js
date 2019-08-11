@@ -1,5 +1,5 @@
 const Database = require('better-sqlite3');
-const config = require('../config');
+const config = require('./config');
 
 let conn = null;
 

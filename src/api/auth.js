@@ -2,8 +2,8 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 
-const database = require('./database');
-const util = require('./util');
+const database = require('../database');
+const util = require('../util');
 
 const router = express.Router();
 const db = database.getDB();

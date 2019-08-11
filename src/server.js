@@ -7,7 +7,7 @@ const passport = require('passport');
 const passportJwt = require('passport-jwt');
 
 const config = require('./config');
-const database = require('./api/database');
+const database = require('./database');
 const api = require('./api');
 
 const app = express();

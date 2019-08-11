@@ -1,7 +1,7 @@
 const express = require('express');
 const passport = require('passport');
 
-const database = require('./database');
+const database = require('../database');
 
 const router = express.Router();
 const db = database.getDB();
