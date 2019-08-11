@@ -27,3 +27,10 @@ exports.role = (role) => (req, res, next) => {
 		res.status(403).end();
 	}
 };
+
+exports.asyncMiddleware = fn => {
+	return (req, res, next) => {
+		return Promise.resolve(fn(req, res, next))
+			.catch(next);
+	};
+};

@@ -58,8 +58,8 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 		});
 	}
 });
-app.use(`/api/${config.apiVersion}`, api.songs);
-app.use(`/api/${config.apiVersion}`, api.auth);
+app.use(`/api/${config.apiVersion}/users`, api.songs);
+app.use(`/api/${config.apiVersion}/auth`, api.auth);
 app.use(`/api/${config.apiVersion}`, api.user);
 
 app.listen(config.PORT, () => {

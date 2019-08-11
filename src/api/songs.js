@@ -6,8 +6,8 @@ const database = require('./database');
 const router = express.Router();
 const db = database.getDB();
 
-router.route('/users/:userID/songs')
-	.all(passport.authenticate('jwt'))
+router.route('/:userID/songs')
+	.all(passport.authenticate('jwt', {session: false}))
 	.get((req, res) => {
 		const q = `
 			SELECT
@@ -28,11 +28,10 @@ router.route('/users/:userID/songs')
 		let q = `
 			INSERT INTO song (name, artist, album, genre, length_, user_id)
 			VALUES (:name, :artist, :album, :genre, :length, :userID);`;
-		db.prepare(q)
-			.run(song);
+		db.prepare(q).run(song);
 
 		q = `
-			SELECT *
+			SELECT id
 			FROM song
 			WHERE
 				name = :name AND
@@ -42,8 +41,8 @@ router.route('/users/:userID/songs')
 		res.status(201).json(newSong);
 	});
 
-router.route('/users/:userID/songs/:songID')
-	.all(passport.authenticate('jwt'))
+router.route('/:userID/songs/:songID')
+	.all(passport.authenticate('jwt', {session: false}))
 	.get((req, res) => {
 		const q = `
 			SELECT

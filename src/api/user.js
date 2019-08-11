@@ -1,4 +1,5 @@
 const express = require('express');
+const passport = require('passport');
 
 const database = require('./database');
 
@@ -6,12 +7,15 @@ const router = express.Router();
 const db = database.getDB();
 
 router.route('/me')
+	.all(passport.authenticate('jwt', {session: false}))
 	.get((req, res) => {
-		/* TODO figure how to load user */
 		const q = `
-			select id
-			from user
-			where auth0_id = :sub;`;
+			SELECT
+				u.id AS 'id',
+				r.name AS 'role'
+			FROM user AS u
+			INNER JOIN role AS r ON r.id = u.role_id
+			WHERE u.id = :id;`;
 		const user = db.prepare(q).get(req.user);
 		if (!user) {
 			res.status(404).json({
@@ -19,15 +23,6 @@ router.route('/me')
 			});
 		}
 		res.json(user);
-	});
-
-router.route('/users')
-	.post((req, res) => {
-		const q = 'insert into user (auth0_id) values (:id);';
-		db.prepare(q).run({
-			id: req.params.auth0ID,
-		});
-		res.status(201).end();
 	});
 
 module.exports = router;

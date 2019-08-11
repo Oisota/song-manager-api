@@ -9,15 +9,22 @@ const router = express.Router();
 const db = database.getDB();
 
 router.route('/login')
-	.post(async (req, res) => {
+	.post(util.asyncMiddleware(async (req, res) => {
 		const email = req.body.email;
 		const password = req.body.password;
 		const q = `
-			SELECT user.id, user.hash, role.name as 'role'
+			SELECT
+				user.id AS 'id',
+				user.hash AS 'hash',
+				role.name AS 'role'
 			FROM user
 			INNER JOIN role ON role.id = user.role_id
 			WHERE email = ?;`;
 		const user = db.prepare(q).get(email);
+		if (!user) {
+			res.status(404).end();
+			return;
+		}
 		const validPassword = await bcrypt.compare(password, user.hash);
 		if (validPassword) {
 			const token = await util.jwtSign({
@@ -31,10 +38,10 @@ router.route('/login')
 		} else {
 			res.status(401).end();
 		}
-	});
+	}));
 
 router.route('/register')
-	.post(async (req, res) => {
+	.post(util.asyncMiddleware(async (req, res) => {
 		const email = req.body.email;
 		const password = req.body.password;
 		const hash = await bcrypt.hash(password, 10);
@@ -60,7 +67,7 @@ router.route('/register')
 		} else {
 			res.status(201).end();
 		}
-	});
+	}));
 
 router.route('/account-requests')
 	.all(passport.authenticate('jwt'))
