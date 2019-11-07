@@ -22,8 +22,9 @@ router.route('/login')
 			WHERE email = ?;`;
 		const user = db.prepare(q).get(email);
 		if (!user) {
-			res.status(404).end();
-			return;
+			const err = new Error('User not found');
+			err.statusCode = 404;
+			throw err;
 		}
 		const validPassword = await bcrypt.compare(password, user.hash);
 		if (validPassword) {

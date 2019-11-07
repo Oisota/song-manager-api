@@ -51,16 +51,25 @@ app.use((req, res, next) => { // allow cors
 		next();
 	}
 });
-app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	if (err.name === 'UnauthorizedError') {
-		res.status(401).json({
-			message: 'Unauthorized'
-		});
-	}
-});
 app.use(`/api/${config.apiVersion}/users`, api.songs);
 app.use(`/api/${config.apiVersion}/auth`, api.auth);
 app.use(`/api/${config.apiVersion}`, api.user);
+app.get('*', (req, res, next) => {
+	const err = new Error('URL Not Found');
+	err.statusCode = 404;
+	next(err);
+});
+
+// error handling middleware
+app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
+	console.error(err.message);
+	if (!err.statusCode) {
+		err.statusCode = 500; // set internal server error code if not already set
+	}
+	res.status(err.statusCode).json({
+		error: err.message
+	});
+});
 
 app.listen(config.PORT, () => {
 	console.log(`Listening on port: ${config.PORT}`);
