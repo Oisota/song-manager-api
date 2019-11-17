@@ -1,13 +1,10 @@
 const express = require('express');
-const bcrypt = require('bcrypt');
 
-const database = require('../database');
 const util = require('../util');
 const AuthService = require('./services/auth');
 
 const authRequired = util.authRequired;
 const router = express.Router();
-const db = database.getDB();
 
 router.route('/login')
 	.post(util.asyncMiddleware(async (req, res) => {
@@ -32,28 +29,15 @@ router.route('/register')
 	.post(util.asyncMiddleware(async (req, res) => {
 		const email = req.body.email;
 		const password = req.body.password;
-		const hash = await bcrypt.hash(password, 10);
+		const result = await AuthService.register(email, password);
 
-		let q = `
-			SELECT id
-			FROM role
-			WHERE name = ?;`;
-		const role = db.prepare(q).get('user');
-		const roleID = role['id'];
-
-		q = `
-			INSERT INTO user (email, hash, role_id)
-			VALUES (:email, :hash, :roleID);`;
-		const info = db.prepare(q).run({
-			email,
-			hash,
-			roleID
-		});
-
-		if (info.changes < 1) {
-			res.status(500).end();
+		if (result) {
+			res.status(201);
+			res.json({
+				id: result.id,
+			});
 		} else {
-			res.status(201).end();
+			res.status(500).end();
 		}
 	}));
 
@@ -69,15 +53,11 @@ router.route('/verify/:id')
 	.all(authRequired)
 	.all(util.role('admin'))
 	.post((req, res) => {
-		const q = `
-			UPDATE user
-			SET verified = 1
-			WHERE id = ?;`;
-		const info = db.prepare(q).run(req.params.id);
-		if (info.changes < 1) {
-			res.status(500).end();
-		} else {
+		const result = AuthService.verify(res.params.id);
+		if (result) {
 			res.status(204).end();
+		} else {
+			res.status(500).end();
 		}
 	});
 
