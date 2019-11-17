@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 
-const util = require('../../util');
+const util = require('../util');
 const UserService = require('./user');
 const RoleService = require('./role');
 

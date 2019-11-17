@@ -1,7 +1,7 @@
 const express = require('express');
 
 const util = require('../util');
-const AuthService = require('./services/auth');
+const AuthService = require('../services/auth');
 
 const authRequired = util.authRequired;
 const router = express.Router();

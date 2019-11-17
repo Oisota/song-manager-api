@@ -4,7 +4,7 @@ const { authRequired } = require('../util');
 
 const router = express.Router();
 
-const SongService = require('./services/song');
+const SongService = require('../services/song');
 
 router.route('/:userID/songs')
 	.all(authRequired)

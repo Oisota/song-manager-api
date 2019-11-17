@@ -8,7 +8,7 @@ const passportJwt = require('passport-jwt');
 
 const config = require('./config');
 const database = require('./database');
-const api = require('./api');
+const routes = require('./routes');
 
 const app = express();
 const db = database.getDB();
@@ -51,9 +51,9 @@ app.use((req, res, next) => { // allow cors
 		next();
 	}
 });
-app.use(`/api/${config.apiVersion}/users`, api.songs);
-app.use(`/api/${config.apiVersion}/auth`, api.auth);
-app.use(`/api/${config.apiVersion}`, api.user);
+app.use(`/api/${config.apiVersion}/users`, routes.songs);
+app.use(`/api/${config.apiVersion}/auth`, routes.auth);
+app.use(`/api/${config.apiVersion}`, routes.user);
 app.get('*', (req, res, next) => {
 	const err = new Error('URL Not Found');
 	err.statusCode = 404;
