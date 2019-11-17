@@ -1,6 +1,12 @@
 const jwt = require('jsonwebtoken');
+const passport = require('passport');
 
 const config = require('./config');
+
+/*
+ * Authentication middleware
+ */
+exports.authRequired = passport.authenticate('jwt', {session: false});
 
 /*
  * Sign data, return a promise that resolves to
@@ -24,6 +30,7 @@ exports.role = (role) => (req, res, next) => {
 	if (req.user.role === role) {
 		next();
 	} else {
+		console.error(`User id: ${req.user.id} does not have role: ${role}`);
 		res.status(403).end();
 	}
 };
