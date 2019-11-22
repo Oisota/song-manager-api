@@ -35,6 +35,7 @@ passport.use(new passportJwt.Strategy({
 
 app.use(morgan('dev'));
 app.disable('x-powered-by');
+app.disable('etag');
 app.use(helmet());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
