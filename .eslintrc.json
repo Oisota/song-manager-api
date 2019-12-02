@@ -39,6 +39,7 @@
 			"error",
 			{"code": 120, "tabWidth": 2}
 		],
-		"no-plusplus": "error"
+		"no-plusplus": "error",
+		"require-atomic-updates": "off"
 	}
 }
