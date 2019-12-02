@@ -11,9 +11,9 @@ router.route('/me')
 		const userID = req.user.id;
 		const user = UserService.getOwnInfo(userID);
 		if (!user) {
-			res.status(404).json({
-				message: 'User Not Found'
-			});
+			const err = new Error('User Not Found');
+			err.statusCode = 404;
+			throw err;
 		}
 		res.json(user);
 	});

@@ -1,4 +1,5 @@
 const express = require('express');
+const asyncHandler = require('express-async-handler');
 
 const util = require('../util');
 const AuthService = require('../services/auth');
@@ -7,7 +8,7 @@ const authRequired = util.authRequired;
 const router = express.Router();
 
 router.route('/login')
-	.post(util.asyncMiddleware(async (req, res) => {
+	.post(asyncHandler(async (req, res) => {
 		const email = req.body.email;
 		const password = req.body.password;
 		let token = null;
@@ -26,7 +27,7 @@ router.route('/login')
 	}));
 
 router.route('/register')
-	.post(util.asyncMiddleware(async (req, res) => {
+	.post(asyncHandler(async (req, res) => {
 		const email = req.body.email;
 		const password = req.body.password;
 		const result = await AuthService.register(email, password);

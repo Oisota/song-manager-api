@@ -1,12 +1,58 @@
 const jwt = require('jsonwebtoken');
-const passport = require('passport');
+const asyncHandler = require('express-async-handler');
 
 const config = require('./config');
+const database = require('./database');
+
+const db = database.getDB();
+
+/*
+ * Verify a jwt
+ */
+function jwtVerify (token, opts) {
+	return new Promise((resolve, reject) => {
+		jwt.verify(token, config.SECRET_KEY, opts, (err, payload) => {
+			if (err) {
+				reject(err);
+			}
+			resolve(payload);
+		});
+	});
+}
 
 /*
  * Authentication middleware
  */
-exports.authRequired = passport.authenticate('jwt', {session: false});
+exports.authRequired = asyncHandler(async (req, res, next) => {
+	let payload = null;
+	try {
+		payload = await jwtVerify(req.token, {});
+	} catch (err) {
+		console.log(err);
+		const newError = new Error('Unauthorized');
+		newError.statusCode = 401;
+		throw newError;
+	}
+	/*
+	 * TODO Use services here to get user info
+	 */
+	const q = `
+		SELECT
+			user.id AS 'id',
+			user.email AS 'email',
+			role.name AS 'role'
+		FROM user
+		INNER JOIN ROLE ON user.role_id = role.id
+		WHERE user.id = ?;`;
+	const user = db.prepare(q).get(payload.sub);
+	if (user) {
+		req.user = user;
+		return next();
+	}
+	const err = new Error('Unauthorized');
+	err.statusCode = 401;
+	throw err;
+});
 
 /*
  * Sign data, return a promise that resolves to
@@ -23,6 +69,7 @@ exports.jwtSign = (data, opts) => {
 	});
 };
 
+
 /*
  * Require that a user has a certain role
  */
@@ -33,15 +80,4 @@ exports.role = (role) => (req, res, next) => {
 		console.error(`User id: ${req.user.id} does not have role: ${role}`);
 		res.status(403).end();
 	}
-};
-
-/*
- * Express middleware for handling
- * async functions
- */
-exports.asyncMiddleware = fn => {
-	return (req, res, next) => {
-		return Promise.resolve(fn(req, res, next))
-			.catch(next);
-	};
 };

@@ -14,6 +14,7 @@ exports.login = async (email, password) => {
 	}
 	const valid_password = await bcrypt.compare(password, user.hash);
 	if (valid_password) {
+		//TODO add exp date to token, what should expiration timeout be?
 		const token = await util.jwtSign({
 			sub: user.id,
 			role: user.role,
