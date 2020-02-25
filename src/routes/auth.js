@@ -3,44 +3,52 @@ const asyncHandler = require('express-async-handler');
 
 const util = require('../util');
 const AuthService = require('../services/auth');
+const { UserCredsSchema } = require('../schemas/auth');
 
 const authRequired = util.authRequired;
+const validate = util.validate;
 const router = express.Router();
 
 router.route('/login')
-	.post(asyncHandler(async (req, res) => {
-		const email = req.body.email;
-		const password = req.body.password;
-		let token = null;
-		try {
-			token = await AuthService.login(email, password);
-		} catch (err) {
-			console.error(err);
-			const e = new Error('Invalid email or password');
-			e.statusCode = 401;
-			throw e;
-		}
-		res.status(200);
-		res.json({
-			token: token,
-		});
-	}));
+	.post(
+		validate(UserCredsSchema),
+		asyncHandler(async (req, res) => {
+			const email = req.body.email;
+			const password = req.body.password;
+			let token = null;
+			try {
+				token = await AuthService.login(email, password);
+			} catch (err) {
+				console.error(err);
+				const e = new Error('Invalid email or password');
+				e.statusCode = 401;
+				throw e;
+			}
+			res.status(200);
+			res.json({
+				token: token,
+			});
+		})
+	);
 
 router.route('/register')
-	.post(asyncHandler(async (req, res) => {
-		const email = req.body.email;
-		const password = req.body.password;
-		const result = await AuthService.register(email, password);
+	.post(
+		validate(UserCredsSchema),
+		asyncHandler(async (req, res) => {
+			const email = req.body.email;
+			const password = req.body.password;
+			const result = await AuthService.register(email, password);
 
-		if (result) {
-			res.status(201);
-			res.json({
-				id: result.id,
-			});
-		} else {
-			res.status(500).end();
-		}
-	}));
+			if (result) {
+				res.status(201);
+				res.json({
+					id: result.id,
+				});
+			} else {
+				res.status(500).end();
+			}
+		})
+	);
 
 router.route('/account-requests')
 	.all(authRequired)

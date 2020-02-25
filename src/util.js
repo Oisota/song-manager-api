@@ -81,3 +81,17 @@ exports.role = (role) => (req, res, next) => {
 		res.status(403).end();
 	}
 };
+
+/*
+ * Validation Middleware using superstruct
+ */
+exports.validate = (schema) => {
+	return (req, res, next) => {
+		const [error] = schema.validate(req.body);
+		if (error) {
+			error.statusCode = 500;
+			throw error;
+		}
+		return next();
+	};
+};

@@ -1,6 +1,7 @@
 const express = require('express');
 
-const { authRequired } = require('../util');
+const { authRequired, validate } = require('../util');
+const { SongSchema } = require('../schemas/songs');
 
 const router = express.Router();
 
@@ -12,13 +13,16 @@ router.route('/:userID/songs')
 		const songs = SongService.getAll(req.params.userID);
 		res.json(songs);
 	})
-	.post((req, res) => {
-		const song = Object.assign(req.params, req.body); //merge params and body
-		const result = SongService.create(song);
-		res.status(201).json({
-			id: result.id,
-		});
-	});
+	.post(
+		validate(SongSchema),
+		(req, res) => {
+			const song = Object.assign(req.params, req.body); //merge params and body
+			const result = SongService.create(song);
+			res.status(201).json({
+				id: result.id,
+			});
+		}
+	);
 
 router.route('/:userID/songs/:songID')
 	.all(authRequired)
@@ -30,15 +34,18 @@ router.route('/:userID/songs/:songID')
 			res.status(404).end();
 		}
 	})
-	.put((req, res) => {
-		const song = Object.assign(req.params, req.body); //merge params and body
-		const result = SongService.update(song);
-		if (result) {
-			res.status(204).end();
-		} else {
-			res.status(404).end();
+	.put(
+		validate(SongSchema),
+		(req, res) => {
+			const song = Object.assign(req.params, req.body); //merge params and body
+			const result = SongService.update(song);
+			if (result) {
+				res.status(204).end();
+			} else {
+				res.status(404).end();
+			}
 		}
-	})
+	)
 	.delete((req, res) => {
 		const song = req.params;
 		const result = SongService.delete(song);
