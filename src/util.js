@@ -2,9 +2,7 @@ const jwt = require('jsonwebtoken');
 const asyncHandler = require('express-async-handler');
 
 const config = require('./config');
-const database = require('./database');
-
-const db = database.getDB();
+const UserService = require('./services/user');
 
 /*
  * Verify a jwt
@@ -33,18 +31,7 @@ exports.authRequired = asyncHandler(async (req, res, next) => {
 		newError.statusCode = 401;
 		throw newError;
 	}
-	/*
-	 * TODO Use services here to get user info
-	 */
-	const q = `
-		SELECT
-			user.id AS 'id',
-			user.email AS 'email',
-			role.name AS 'role'
-		FROM user
-		INNER JOIN ROLE ON user.role_id = role.id
-		WHERE user.id = ?;`;
-	const user = db.prepare(q).get(payload.sub);
+	const user = UserService.getOwnInfo(payload.sub);
 	if (user) {
 		req.user = user;
 		return next();
