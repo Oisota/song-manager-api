@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const bearerToken = require('express-bearer-token');
 const helmet = require('helmet');
+const sequelize = require('sequelize');
 
 const config = require('./config');
 const routes = require('./routes');
@@ -41,16 +42,21 @@ app.get('*', (req, res, next) => {
 });
 
 // error handling middleware
+// TODO move this to util.js module
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
-	console.error(err.message);
-	if (!err.statusCode) {
-		err.statusCode = 500; // set internal server error code if not already set
+	if (err instanceof sequelize.ValidationError) {
+		console.log(err.message);
+		console.log(err.errors);
+	} else {
+		console.error(err.message);
 	}
-	res.status(err.statusCode).json({
-		error: {
-			message: err.message,
-		},
-	});
+	res.status(err.statusCode || 500) // send internal server error code if not already set
+		.json({
+			data: null,
+			error: {
+				message: err.message || 'Internal Server Error', // set message if not already set
+			},
+		});
 });
 
 app.listen(config.PORT, () => {

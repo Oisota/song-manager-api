@@ -53,21 +53,21 @@ router.route('/register')
 router.route('/account-requests')
 	.all(authRequired)
 	.all(util.role('admin'))
-	.get((req, res) => {
-		const users = AuthService.accountRequests();
+	.get(asyncHandler(async (req, res) => {
+		const users = await AuthService.accountRequests();
 		return res.json(users).end();
-	});
+	}));
 
 router.route('/verify/:id')
 	.all(authRequired)
 	.all(util.role('admin'))
-	.post((req, res) => {
-		const result = AuthService.verify(res.params.id);
+	.post(asyncHandler(async (req, res) => {
+		const result = await AuthService.verify(req.params.id);
 		if (result) {
 			res.status(204).end();
 		} else {
 			res.status(500).end();
 		}
-	});
+	}));
 
 module.exports = router;

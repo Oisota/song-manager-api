@@ -8,12 +8,12 @@ const RoleService = require('./role');
  * Login a user
  */
 exports.login = async (email, password) => {
-	const user = UserService.getByEmail(email);
+	const user = await UserService.getByEmail(email);
 	if (!user) {
 		throw new Error('Could not find user');
 	}
-	const valid_password = await bcrypt.compare(password, user.hash);
-	if (valid_password) {
+	const validPassword = await bcrypt.compare(password, user.hash);
+	if (validPassword) {
 		//TODO add exp date to token, what should expiration timeout be?
 		const token = await util.jwtSign({
 			sub: user.id,
@@ -31,7 +31,7 @@ exports.register = async (email, password) => {
 	const user = {
 		email: email,
 		hash: hash,
-		roleID: role.id,
+		roleId: role.id,
 	};
 	const result = UserService.create(user);
 	return result;
@@ -40,12 +40,15 @@ exports.register = async (email, password) => {
 /*
  * Get user account requests
  */
-exports.accountRequests = () => {
-	const users = UserService.getUnverified();
+exports.accountRequests = async () => {
+	const users = await UserService.getUnverified();
 	return users;
 };
 
-exports.verifyUser = (userID) => {
-	const result = UserService.verify(userID);
+/*
+ * Verify a user's account, allowing them to login
+ */
+exports.verify = async (userID) => {
+	const result = await UserService.verify(userID);
 	return result;
 };

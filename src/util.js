@@ -31,7 +31,7 @@ exports.authRequired = asyncHandler(async (req, res, next) => {
 		newError.statusCode = 401;
 		throw newError;
 	}
-	const user = UserService.getOwnInfo(payload.sub);
+	const user = await UserService.getById(payload.sub);
 	if (user) {
 		req.user = user;
 		return next();
@@ -61,11 +61,13 @@ exports.jwtSign = (data, opts) => {
  * Require that a user has a certain role
  */
 exports.role = (role) => (req, res, next) => {
-	if (req.user.role === role) {
+	if (req.user.role.name === role) {
 		next();
 	} else {
 		console.error(`User id: ${req.user.id} does not have role: ${role}`);
-		res.status(403).end();
+		const err = new Error('Forbidden');
+		err.statusCode = 403;
+		throw err;
 	}
 };
 

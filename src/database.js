@@ -1,3 +1,4 @@
+const Sequelize = require('sequelize');
 const Database = require('better-sqlite3');
 const config = require('./config');
 
@@ -9,3 +10,8 @@ exports.getDB = () => {
 	}
 	return conn;
 };
+
+exports.sequelize = new Sequelize({
+	dialect: 'sqlite',
+	storage: config.dbFile,
+});

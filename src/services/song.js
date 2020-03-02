@@ -1,18 +1,24 @@
 const SongRepo = require('../repositories/song');
+const SongModel = require('../models/song');
 
 /*
  * Get all songs for a given user
  */
-exports.getAll = (userID) => {
-	const songs = SongRepo.getAll(userID);
+exports.getAll = async (userID) => {
+	//const songs = SongRepo.getAll(userID);
+	const songs = await SongModel.findAll({
+		where: {
+			user_id: userID,
+		}
+	});
 	return songs;
 };
 
 /*
- * Get all a single for a given user
+ * Get a single song for a given user
  */
-exports.getOne = (userID, songID) => {
-	const song = SongRepo.getOne(userID, songID);
+exports.getOne = async (userID, songID) => {
+	const song = await SongModel.findByPk(songID);
 	return song;
 };
 
