@@ -8,27 +8,25 @@ const router = express.Router();
 
 const SongService = require('../services/song');
 
-router.route('/:userID/songs')
+router.route('/:userId/songs')
 	.all(authRequired)
 	.get(asyncHandler(async (req, res) => {
-		const songs = await SongService.getAll(req.params.userID);
+		const songs = await SongService.getAll(req.user);
 		res.json(songs);
 	}))
 	.post(
 		validate(SongSchema),
-		(req, res) => {
+		asyncHandler(async (req, res) => {
 			const song = Object.assign(req.params, req.body); //merge params and body
-			const result = SongService.create(song);
-			res.status(201).json({
-				id: result.id,
-			});
-		}
+			const result = await SongService.create(song);
+			res.status(201).json(result);
+		})
 	);
 
-router.route('/:userID/songs/:songID')
+router.route('/:userId/songs/:id')
 	.all(authRequired)
 	.get(asyncHandler(async (req, res) => {
-		const song = await SongService.getOne(req.params.userID, req.params.songID);
+		const song = await SongService.getOne(req.params.userId, req.params.id);
 		if (song) {
 			res.json(song);
 		} else {
@@ -37,17 +35,17 @@ router.route('/:userID/songs/:songID')
 	}))
 	.put(
 		validate(SongSchema),
-		(req, res) => {
+		asyncHandler(async (req, res) => {
 			const song = Object.assign(req.params, req.body); //merge params and body
-			const result = SongService.update(song);
+			const result = await SongService.update(song);
 			if (result) {
 				res.status(204).end();
 			} else {
 				res.status(404).end();
 			}
-		}
+		})
 	)
-	.delete((req, res) => {
+	.delete(asyncHandler(async (req, res) => {
 		const song = req.params;
 		const result = SongService.delete(song);
 		if (result) {
@@ -55,6 +53,6 @@ router.route('/:userID/songs/:songID')
 		} else {
 			res.status(404).end();
 		}
-	});
+	}));
 
 module.exports = router;

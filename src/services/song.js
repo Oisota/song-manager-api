@@ -1,16 +1,10 @@
-const SongRepo = require('../repositories/song');
 const SongModel = require('../models/song');
 
 /*
  * Get all songs for a given user
  */
-exports.getAll = async (userID) => {
-	//const songs = SongRepo.getAll(userID);
-	const songs = await SongModel.findAll({
-		where: {
-			user_id: userID,
-		}
-	});
+exports.getAll = async (user) => {
+	const songs = await user.getSongs();
 	return songs;
 };
 
@@ -25,23 +19,28 @@ exports.getOne = async (userID, songID) => {
 /*
  * create new song for a given user
  */
-exports.create = (song) => {
-	const result = SongRepo.create(song);
+exports.create = async (song) => {
+	const result = await SongModel.create(song, {
+		fields: ['userId', 'name', 'artist', 'album', 'genre', 'length'],
+	});
 	return result;
 };
 
 /*
  * update song for a given user
  */
-exports.update = (song) => {
-	const result = SongRepo.update(song);
+exports.update = async (song) => {
+	console.log(song.id);
+	const oldSong = await SongModel.findByPk(song.id);
+	const result = await oldSong.update(song);
 	return result;
 };
 
 /*
  * delete song for a given user
  */
-exports.delete = (song) => {
-	const result = SongRepo.delete(song);
+exports.delete = async (data) => {
+	const song = await SongModel.findByPk(data.id);
+	const result = await song.destroy();
 	return result;
 };

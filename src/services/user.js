@@ -47,7 +47,6 @@ exports.verify = async (userID) => {
 };
 
 exports.create = async (user) => {
-	console.log(user);
 	const newUser = await UserModel.create(user, {
 		fields: ['email', 'hash', 'roleId', 'verified'],
 	});

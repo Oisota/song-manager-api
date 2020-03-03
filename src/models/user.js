@@ -6,11 +6,6 @@ const RoleModel = require('./role');
 class UserModel extends Sequelize.Model {}
 
 UserModel.init({
-	id: {
-		type: Sequelize.INTEGER,
-		primaryKey: true,
-		autoIncrement: true,
-	},
 	email: {
 		type: Sequelize.STRING,
 	},

@@ -27,13 +27,13 @@ exports.login = async (email, password) => {
 
 exports.register = async (email, password) => {
 	const hash = await bcrypt.hash(password, 10);
-	const role = RoleService.getByName('user');
+	const role = await RoleService.getByName('user');
 	const user = {
 		email: email,
 		hash: hash,
 		roleId: role.id,
 	};
-	const result = UserService.create(user);
+	const result = await UserService.create(user);
 	return result;
 };
 

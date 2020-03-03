@@ -6,17 +6,6 @@ const UserModel = require('./user');
 class SongModel extends Sequelize.Model {}
 
 SongModel.init({
-	id: {
-		type: Sequelize.INTEGER,
-		primaryKey: true,
-	},
-	user_id: {
-		type: Sequelize.INTEGER,
-		references: {
-			model: UserModel,
-			key: 'id',
-		}
-	},
 	name: {
 		type: Sequelize.STRING,
 	},
@@ -29,14 +18,20 @@ SongModel.init({
 	genre: {
 		type: Sequelize.STRING,
 	},
-	length_: {
+	length: {
 		type: Sequelize.INTEGER,
+		field: 'length_',
 	},
 }, {
 	sequelize: db.sequelize,
 	modelName: 'song',
 	timestamps: false,
 	tableName: 'song',
+	underscored: true,
+});
+
+UserModel.hasMany(SongModel, {
+	as: 'Songs',
 });
 
 module.exports = SongModel;

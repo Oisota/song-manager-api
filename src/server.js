@@ -45,6 +45,7 @@ app.get('*', (req, res, next) => {
 // TODO move this to util.js module
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	if (err instanceof sequelize.ValidationError) {
+		console.log(err);
 		console.log(err.message);
 		console.log(err.errors);
 	} else {
