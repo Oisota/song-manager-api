@@ -18,16 +18,6 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.use(bearerToken());
 app.use(morgan('dev'));
-app.use((req, res, next) => { // allow cors
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-	res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-	if (req.method === 'OPTIONS') {
-		res.status(200).end();
-	} else {
-		next();
-	}
-});
 
 // main app routes
 app.use(`/api/${config.apiVersion}/users`, routes.songs);
@@ -42,7 +32,6 @@ app.get('*', (req, res, next) => {
 });
 
 // error handling middleware
-// TODO move this to util.js module
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	if (err instanceof sequelize.ValidationError) {
 		console.log(err);
