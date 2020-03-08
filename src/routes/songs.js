@@ -14,7 +14,7 @@ router.route('/:userId/songs')
 	.get(
 		asyncHandler(async (req, res) => {
 			const songs = await SongService.getAll(req.user);
-			res.json(envelope(songs))
+			res.json(envelope(songs));
 		}),
 	)
 	.post(
