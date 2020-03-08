@@ -7,6 +7,7 @@ const sequelize = require('sequelize');
 
 const config = require('./config');
 const routes = require('./routes');
+const { envelope } = require('./envelope');
 
 const app = express();
 
@@ -41,12 +42,9 @@ app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 		console.error(err.message);
 	}
 	res.status(err.statusCode || 500) // send internal server error code if not already set
-		.json({
-			data: null,
-			error: {
-				message: err.message || 'Internal Server Error', // set message if not already set
-			},
-		});
+		.json(envelope(null, {
+			message: err.message || 'Internal Server Error', // set message if not already set
+		}));
 });
 
 app.listen(config.PORT, () => {
