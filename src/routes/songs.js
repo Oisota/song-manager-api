@@ -3,6 +3,7 @@ const asyncHandler = require('express-async-handler');
 
 const { authRequired, validate } = require('../util');
 const { SongSchema } = require('../schemas/songs');
+const { envelope } = require('../envelope');
 
 const router = express.Router();
 
@@ -10,16 +11,18 @@ const SongService = require('../services/song');
 
 router.route('/:userId/songs')
 	.all(authRequired)
-	.get(asyncHandler(async (req, res) => {
-		const songs = await SongService.getAll(req.user);
-		res.json(songs);
-	}))
+	.get(
+		asyncHandler(async (req, res) => {
+			const songs = await SongService.getAll(req.user);
+			res.json(envelope(songs))
+		}),
+	)
 	.post(
 		validate(SongSchema),
 		asyncHandler(async (req, res) => {
 			const song = Object.assign(req.params, req.body); //merge params and body
 			const result = await SongService.create(song);
-			res.status(201).json(result);
+			res.status(201).json(envelope(result));
 		})
 	);
 
@@ -28,7 +31,7 @@ router.route('/:userId/songs/:id')
 	.get(asyncHandler(async (req, res) => {
 		const song = await SongService.getOne(req.params.userId, req.params.id);
 		if (song) {
-			res.json(song);
+			res.json(envelope(song));
 		} else {
 			res.status(404).end();
 		}

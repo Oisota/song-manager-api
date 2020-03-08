@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const util = require('../util');
 const AuthService = require('../services/auth');
 const { UserCredsSchema } = require('../schemas/auth');
+const { envelope } = require('../envelope');
 
 const authRequired = util.authRequired;
 const validate = util.validate;
@@ -25,9 +26,9 @@ router.route('/login')
 				throw e;
 			}
 			res.status(200);
-			res.json({
+			res.json(envelope({
 				token: token,
-			});
+			}));
 		})
 	);
 
@@ -41,9 +42,9 @@ router.route('/register')
 
 			if (result) {
 				res.status(201);
-				res.json({
+				res.json(envelope({
 					id: result.id,
-				});
+				}));
 			} else {
 				res.status(500).end();
 			}
@@ -55,7 +56,7 @@ router.route('/account-requests')
 	.all(util.role('admin'))
 	.get(asyncHandler(async (req, res) => {
 		const users = await AuthService.accountRequests();
-		return res.json(users).end();
+		return res.json(envelope(users)).end();
 	}));
 
 router.route('/verify/:id')

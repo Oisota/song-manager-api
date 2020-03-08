@@ -2,6 +2,7 @@ const express = require('express');
 const asyncHandler = require('express-async-handler');
 
 const { authRequired } = require('../util');
+const { envelope } = require('../envelope');
 const UserService = require('../services/user');
 
 const router = express.Router();
@@ -15,7 +16,7 @@ router.route('/me')
 			err.statusCode = 404;
 			throw err;
 		}
-		res.json(user);
+		res.json(envelope(user));
 	}));
 
 module.exports = router;
