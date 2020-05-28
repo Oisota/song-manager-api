@@ -5,6 +5,7 @@ const bearerToken = require('express-bearer-token');
 const helmet = require('helmet');
 const sequelize = require('sequelize');
 const rateLimit = require('express-rate-limit');
+const superstruct = require('superstruct');
 
 const config = require('./config');
 const routes = require('./routes');
@@ -43,10 +44,15 @@ app.get('*', (req, res, next) => {
 // error handling middleware
 app.use((err, req, res, next) => { // eslint-disable-line no-unused-vars
 	if (err instanceof sequelize.ValidationError) {
+		console.log('Sequelize Error');
 		console.log(err);
 		console.log(err.message);
 		console.log(err.errors);
+	} else if (err instanceof superstruct.StructError) {
+		console.log('SuperStruct Error');
+		console.error(err.message);
 	} else {
+		console.log('Server Error');
 		console.error(err.message);
 	}
 	res.status(err.statusCode || 500) // send internal server error code if not already set
