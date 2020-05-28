@@ -30,7 +30,6 @@ exports.create = async (song) => {
  * update song for a given user
  */
 exports.update = async (song) => {
-	console.log(song.id);
 	const oldSong = await SongModel.findByPk(song.id);
 	const result = await oldSong.update(song);
 	return result;
