@@ -1,16 +1,23 @@
+const asyncHandler = require('express-async-handler');
 const sequelize = require('sequelize');
 const superstruct = require('superstruct');
 
+const util = require('./util');
+const UserService = require('./services/user');
 const { envelope } = require('./envelope');
 
-// catch all route for returning 404
+/*
+ * Catch all route for returning 404s
+ */
 exports.catchAllRoute = (req, res, next) => {
 	const err = new Error('URL Not Found');
 	err.statusCode = 404;
 	next(err);
 };
 
-// error handling middleware
+/*
+ * Handle application errors
+ */
 exports.errorHandler = (err, req, res, next) => { // eslint-disable-line no-unused-vars
 	if (err instanceof sequelize.ValidationError) {
 		console.log('Sequelize Error');
@@ -28,4 +35,57 @@ exports.errorHandler = (err, req, res, next) => { // eslint-disable-line no-unus
 		.json(envelope(null, {
 			message: err.message || 'Internal Server Error', // set message if not already set
 		}));
+};
+
+/*
+ * Authentication middleware
+ */
+exports.authRequired = asyncHandler(async (req, res, next) => {
+	let payload = null;
+	try {
+		payload = await util.jwtVerify(req.token, {});
+	} catch (err) {
+		console.log(err);
+		const newError = new Error('Unauthorized');
+		newError.statusCode = 401;
+		throw newError;
+	}
+	const user = await UserService.getById(payload.sub);
+	if (user) {
+		req.user = user;
+		return next();
+	}
+	const err = new Error('Unauthorized');
+	err.statusCode = 401;
+	throw err;
+});
+
+
+
+/*
+ * Require that a user has a certain role
+ */
+exports.role = (role) => (req, res, next) => {
+	if (req.user.role.name === role) {
+		next();
+	} else {
+		console.error(`User id: ${req.user.id} does not have role: ${role}`);
+		const err = new Error('Forbidden');
+		err.statusCode = 403;
+		throw err;
+	}
+};
+
+/*
+ * Validation Middleware using superstruct
+ */
+exports.validate = (schema) => {
+	return (req, res, next) => {
+		const [error] = schema.validate(req.body);
+		if (error) {
+			error.statusCode = 400;
+			throw error;
+		}
+		return next();
+	};
 };

@@ -1,13 +1,13 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 
-const util = require('../util');
+const middleware = require('../middleware');
 const AuthService = require('../services/auth');
 const { UserCredsSchema } = require('../schemas/auth');
 const { envelope } = require('../envelope');
 
-const authRequired = util.authRequired;
-const validate = util.validate;
+const authRequired = middleware.authRequired;
+const validate = middleware.validate;
 const router = express.Router();
 
 router.route('/login')
@@ -53,7 +53,7 @@ router.route('/register')
 
 router.route('/account-requests')
 	.all(authRequired)
-	.all(util.role('admin'))
+	.all(middleware.role('admin'))
 	.get(asyncHandler(async (req, res) => {
 		const users = await AuthService.accountRequests();
 		return res.json(envelope(users)).end();
@@ -61,7 +61,7 @@ router.route('/account-requests')
 
 router.route('/verify/:id')
 	.all(authRequired)
-	.all(util.role('admin'))
+	.all(middleware.role('admin'))
 	.post(asyncHandler(async (req, res) => {
 		const result = await AuthService.verify(req.params.id);
 		if (result) {

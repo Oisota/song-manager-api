@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 
-const { authRequired, validate } = require('../util');
+const { authRequired, validate } = require('../middleware');
 const { SongSchema } = require('../schemas/songs');
 const { envelope } = require('../envelope');
 
