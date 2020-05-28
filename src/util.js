@@ -78,7 +78,7 @@ exports.validate = (schema) => {
 	return (req, res, next) => {
 		const [error] = schema.validate(req.body);
 		if (error) {
-			error.statusCode = 500;
+			error.statusCode = 400;
 			throw error;
 		}
 		return next();
