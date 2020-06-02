@@ -1,13 +1,12 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 
-const { authRequired, validate } = require('../middleware');
-const { SongSchema } = require('../schemas/songs');
-const { envelope } = require('../envelope');
+const { authRequired, validate } = require('@/middleware');
+const { SongSchema } = require('@/schemas/songs');
+const { envelope } = require('@/envelope');
+const SongService = require('@/services/song');
 
 const router = express.Router();
-
-const SongService = require('../services/song');
 
 router.route('/:userId/songs')
 	.all(authRequired)

@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize');
 
-const db = require('../database');
-const UserModel = require('./user');
+const db = require('@/database');
+const UserModel = require('@/models/user');
 
 class SongModel extends Sequelize.Model {}
 

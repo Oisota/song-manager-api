@@ -1,8 +1,8 @@
 const bcrypt = require('bcrypt');
 
-const util = require('../util');
-const UserService = require('./user');
-const RoleService = require('./role');
+const util = require('@/util');
+const UserService = require('@/services/user');
+const RoleService = require('@/services/role');
 
 /*
  * Login a user

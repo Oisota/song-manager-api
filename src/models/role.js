@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const db = require('../database');
+const db = require('@/database');
 
 class RoleModel extends Sequelize.Model {}
 

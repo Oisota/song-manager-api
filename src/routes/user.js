@@ -1,9 +1,9 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 
-const { authRequired } = require('../middleware');
-const { envelope } = require('../envelope');
-const UserService = require('../services/user');
+const { authRequired } = require('@/middleware');
+const { envelope } = require('@/envelope');
+const UserService = require('@/services/user');
 
 const router = express.Router();
 

@@ -1,5 +1,5 @@
-const UserModel = require('../models/user');
-const RoleModel = require('../models/role');
+const UserModel = require('@/models/user');
+const RoleModel = require('@/models/role');
 
 exports.getOwnInfo = async (userID) => {
 	const user = await UserModel.findByPk(userID, {

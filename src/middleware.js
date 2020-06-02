@@ -2,9 +2,9 @@ const asyncHandler = require('express-async-handler');
 const sequelize = require('sequelize');
 const superstruct = require('superstruct');
 
-const util = require('./util');
-const UserService = require('./services/user');
-const { envelope } = require('./envelope');
+const util = require('@/util');
+const UserService = require('@/services/user');
+const { envelope } = require('@/envelope');
 
 /*
  * Catch all route for returning 404s

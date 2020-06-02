@@ -1,4 +1,4 @@
-const SongModel = require('../models/song');
+const SongModel = require('@/models/song');
 
 /*
  * Get all songs for a given user

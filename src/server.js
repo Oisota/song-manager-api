@@ -1,3 +1,4 @@
+require('module-alias/register');
 const express = require('express');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
@@ -5,10 +6,10 @@ const bearerToken = require('express-bearer-token');
 const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 
-const config = require('./config');
-const routes = require('./routes');
-const middleware = require('./middleware');
-const { envelope } = require('./envelope');
+const config = require('@/config');
+const routes = require('@/routes');
+const middleware = require('@/middleware');
+const { envelope } = require('@/envelope');
 
 const app = express();
 

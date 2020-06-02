@@ -1,4 +1,4 @@
-const RoleModel = require('../models/role');
+const RoleModel = require('@/models/role');
 
 exports.getByName = async (name) => {
 	const role = await RoleModel.findOne({

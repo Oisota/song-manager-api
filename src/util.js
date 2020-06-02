@@ -1,6 +1,6 @@
 const jwt = require('jsonwebtoken');
 
-const config = require('./config');
+const config = require('@/config');
 
 /*
  * Sign data, return a promise that resolves to
