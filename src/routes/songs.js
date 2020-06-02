@@ -3,7 +3,7 @@ const asyncHandler = require('express-async-handler');
 
 const { authRequired, validate } = require('@/middleware');
 const { SongSchema } = require('@/schemas/songs');
-const { envelope } = require('@/envelope');
+const { envelope } = require('@/util');
 const SongService = require('@/services/song');
 
 const router = express.Router();

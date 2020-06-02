@@ -4,7 +4,7 @@ const asyncHandler = require('express-async-handler');
 const middleware = require('@/middleware');
 const AuthService = require('@/services/auth');
 const { UserCredsSchema } = require('@/schemas/auth');
-const { envelope } = require('@/envelope');
+const { envelope } = require('@/util');
 
 const authRequired = middleware.authRequired;
 const validate = middleware.validate;

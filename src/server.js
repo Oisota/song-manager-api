@@ -9,7 +9,7 @@ const rateLimit = require('express-rate-limit');
 const config = require('@/config');
 const routes = require('@/routes');
 const middleware = require('@/middleware');
-const { envelope } = require('@/envelope');
+const { envelope } = require('@/util');
 
 const app = express();
 

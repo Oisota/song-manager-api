@@ -2,9 +2,8 @@ const asyncHandler = require('express-async-handler');
 const sequelize = require('sequelize');
 const superstruct = require('superstruct');
 
-const util = require('@/util');
 const UserService = require('@/services/user');
-const { envelope } = require('@/envelope');
+const { jwtVerify, envelope } = require('@/util');
 
 /*
  * Catch all route for returning 404s
@@ -43,7 +42,7 @@ exports.errorHandler = (err, req, res, next) => { // eslint-disable-line no-unus
 exports.authRequired = asyncHandler(async (req, res, next) => {
 	let payload = null;
 	try {
-		payload = await util.jwtVerify(req.token, {});
+		payload = await jwtVerify(req.token, {});
 	} catch (err) {
 		console.log(err);
 		const newError = new Error('Unauthorized');
