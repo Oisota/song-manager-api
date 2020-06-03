@@ -32,7 +32,7 @@
 		"no-shadow": "error",
 		"no-use-before-define": "error",
 		"global-require": "error",
-		"no-process-env": "error",
+		"no-process-env": "off",
 		"no-lonely-if": "error",
 		"max-params": ["error", 4],
 		"max-len": [

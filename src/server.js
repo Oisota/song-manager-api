@@ -30,9 +30,9 @@ app.use(rateLimit({
 }));
 
 // main app routes
-app.use(`/api/${config.apiVersion}/users`, routes.songs);
-app.use(`/api/${config.apiVersion}/auth`, routes.auth);
-app.use(`/api/${config.apiVersion}`, routes.user);
+app.use(`/api/${config.API_VERSION}/users`, routes.songs);
+app.use(`/api/${config.API_VERSION}/auth`, routes.auth);
+app.use(`/api/${config.API_VERSION}`, routes.user);
 
 app.get('*', middleware.catchAllRoute);
 app.use(middleware.errorHandler);
