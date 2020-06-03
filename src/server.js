@@ -30,6 +30,7 @@ app.use(rateLimit({
 }));
 
 // main app routes
+app.use(`/api/${config.API_VERSION}/health-check`, routes.healthCheck);
 app.use(`/api/${config.API_VERSION}/users`, routes.songs);
 app.use(`/api/${config.API_VERSION}/auth`, routes.auth);
 app.use(`/api/${config.API_VERSION}`, routes.user);
