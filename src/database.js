@@ -3,5 +3,5 @@ const config = require('@/config');
 
 exports.sequelize = new Sequelize({
 	dialect: 'sqlite',
-	storage: config.dbFile,
+	storage: config.DB_FILE,
 });
