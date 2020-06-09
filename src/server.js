@@ -13,7 +13,6 @@ const { envelope } = require('@/util');
 
 const app = express();
 
-app.use(morgan('dev'));
 app.disable('x-powered-by');
 app.disable('etag');
 app.use(helmet());
