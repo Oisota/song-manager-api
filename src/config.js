@@ -1,4 +1,7 @@
-exports.DB_FILE = process.env.DB_FILE;
-exports.API_VERSION = 'v1';
-exports.SECRET_KEY = process.env.SECRET_KEY;
+const config = require(process.env.CONFIG_FILE);
+
 exports.PORT = process.env.PORT;
+exports.DB_FILE = config.DB_FILE;
+exports.SECRET_KEY = config.SECRET_KEY;
+exports.API_VERSION = 'v1';
+
