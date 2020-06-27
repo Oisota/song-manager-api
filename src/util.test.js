@@ -1,3 +1,4 @@
+const {describe, it} = require('mocha');
 const { expect } = require('chai');
 
 const util = require('@/util');

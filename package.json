@@ -15,7 +15,7 @@
 		"musician"
 	],
 	"scripts": {
-		"start": "npm run lint && nodemon src/server.js",
+		"start": "npm run lint && npm run test && nodemon src/server.js",
 		"test": "mocha --require module-alias/register --exit src",
 		"lint": "eslint 'src/**/*.js'"
 	},
