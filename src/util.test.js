@@ -23,8 +23,7 @@ describe('jwtSign', () => {
 		const data = {
 			foo: 'bar'
 		}
-		const opts = {}
-		const result = util.jwtSign(data, opts);
+		const result = util.jwtSign(data);
 		expect(result).to.be.a('promise');
 	});
 
@@ -32,8 +31,7 @@ describe('jwtSign', () => {
 		const data = {
 			foo: 'bar'
 		}
-		const opts = {}
-		const result = await util.jwtSign(data, opts);
+		const result = await util.jwtSign(data);
 		expect(result).to.be.a('string');
 	});
 })
