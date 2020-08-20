@@ -1,4 +1,4 @@
-const { describe } = require('mocha');
+const { describe, it } = require('mocha');
 const chai = require('chai');
 const { expect } = require('chai');
 const spies = require('chai-spies');
@@ -38,9 +38,9 @@ describe('role', () => {
 				}
 			}
 		};
-		const res = {}
-		const next = chai.spy(() => {})
-		const middlwareFunc = mw.role('bar')
+		const res = {};
+		const next = chai.spy(() => {});
+		const middlwareFunc = mw.role('bar');
 		const fn = () => middlwareFunc(req, res, next);
 		expect(fn).to.throw();
 		expect(next).to.have.not.been.called();
@@ -54,8 +54,8 @@ describe('role', () => {
 				}
 			}
 		};
-		const res = {}
-		const next = chai.spy(() => {})
+		const res = {};
+		const next = chai.spy(() => {});
 		mw.role('foo')(req, res, next);
 		expect(next).to.have.been.called();
 	});

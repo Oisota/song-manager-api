@@ -22,7 +22,7 @@ describe('jwtSign', () => {
 	it('Should return a promise', () => {
 		const data = {
 			foo: 'bar'
-		}
+		};
 		const result = util.jwtSign(data);
 		expect(result).to.be.a('promise');
 	});
@@ -30,11 +30,11 @@ describe('jwtSign', () => {
 	it('Should resolve to a jwt string', async () => {
 		const data = {
 			foo: 'bar'
-		}
+		};
 		const result = await util.jwtSign(data);
 		expect(result).to.be.a('string');
 	});
-})
+});
 
 describe('jwtVerify', () => {
 	it('Should return a promise', () => {
